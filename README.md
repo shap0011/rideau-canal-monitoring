@@ -158,11 +158,11 @@ _Architecture diagram is located in_ `architecture/architecture-diagram.png`.
 
 See `LINKS.md` for:
 
-    - All three GitHub repositories
+- All three GitHub repositories
 
-    - Live Azure App Service dashboard URL
+- Live Azure App Service dashboard URL
 
-    - Video demo link
+- Video demo link
 
 ---
 
