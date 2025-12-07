@@ -14,7 +14,7 @@ The system simulates IoT sensors sending ice and weather data, processes it in r
 
 - **Student ID:** 040687883
 
-- **Course:** CST8916 - Remote Data and Real-time Applications (Fall 2025)
+- **Course:** 25F CST8916 Remote Data and RT Applications
 
 **Repositories:**
 
@@ -56,35 +56,35 @@ _Architecture diagram is located in_ `architecture/architecture-diagram.png`.
 
 1. **Sensor Simulation** (Python) generates JSON data every 10 seconds for:
 
-&nbsp; - Dow's Lake
+   - Dow's Lake
 
-&nbsp; - Fifth Avenue
+   - Fifth Avenue
 
-&nbsp; - NAC
+   - NAC
 
 2. Data is sent to **Azure IoT Hub**.
 
 3. **Azure Stream Analytics** reads from IoT Hub and:
 
-&nbsp; - Aggregates data in **5-minute tumbling windows**.
+   - Aggregates data in **5-minute tumbling windows**.
 
-&nbsp; - Calculates averages/min/max values.
+   - Calculates averages/min/max values.
 
-&nbsp; - Determines **safety status** per window and location.
+   - Determines **safety status** per window and location.
 
-&nbsp; - Writes aggregated data to:
+   - Writes aggregated data to:
 
-&nbsp; - **Azure Cosmos DB** (for dashboard queries).
+     - **Azure Cosmos DB** (for dashboard queries).
 
-&nbsp; - **Azure Blob Storage** (for historical archives).
+     - **Azure Blob Storage** (for historical archives).
 
 4. **Flask Web Dashboard** (Python) reads from Cosmos DB and:
 
-&nbsp; - Displays latest status for each location.
+   - Displays latest status for each location.
 
-&nbsp; - Shows historical trend charts (last hour).
+   - Shows historical trend charts (last hour).
 
-&nbsp; - Auto-refreshes every 30 seconds.
+   - Auto-refreshes every 30 seconds.
 
 ### 4.3 Azure Services Used
 
@@ -104,53 +104,53 @@ _Architecture diagram is located in_ `architecture/architecture-diagram.png`.
 
 - **IoT Sensor Simulation**
 
-&nbsp; - Repository: [rideau-canal-sensor-simulation](https://github.com/shap0011/rideau-canal-sensor-simulation)
+  - Repository: [rideau-canal-sensor-simulation](https://github.com/shap0011/rideau-canal-sensor-simulation)
 
-&nbsp; - Python script that simulates three devices and sends telemetry to IoT Hub.
+  - Python script that simulates three devices and sends telemetry to IoT Hub.
 
 - **Azure IoT Hub Configuration**
 
-&nbsp; - Resource group: `cst8916Final`
+  - Resource group: `cst8916Final`
 
-&nbsp; - Region: `Canada Central`
+  - Region: `Canada Central`
 
-&nbsp; - Devices: `dows-lake`, `fifth-avenue`, `nac`
+  - Devices: `dows-lake`, `fifth-avenue`, `nac`
 
 - **Stream Analytics Job**
 
-&nbsp; - Input: IoT Hub
+  - Input: IoT Hub
 
-&nbsp; - Outputs: Cosmos DB + Blob Storage
+  - Outputs: Cosmos DB + Blob Storage
 
-&nbsp; - Query: see `stream-analytics/query.sql`
+  - Query: see `stream-analytics/query.sql`
 
 - **Cosmos DB Setup**
 
-&nbsp; - Database: `RideauCanalDB`
+  - Database: `RideauCanalDB`
 
-&nbsp; - Container: `SensorAggregations`
+  - Container: `SensorAggregations`
 
-&nbsp; - Partition key: `/location`
+  - Partition key: `/location`
 
-&nbsp; - Document ID: `{location}-{timestamp}`
+  - Document ID: `{location}-{timestamp}`
 
 - **Blob Storage Configuration**
 
-&nbsp; - Container: `historical-data`
+  - Container: `historical-data`
 
-&nbsp; - Path: `aggregations/{date}/{time}`
+  - Path: `aggregations/{date}/{time}`
 
-&nbsp; - Format: line-delimited JSON
+  - Format: line-delimited JSON
 
 - **Web Dashboard (Flask)**
 
-&nbsp; - Repository: [rideau-canal-dashboard](https://github.com/shap0011/rideau-canal-dashboard)
+  - Repository: [rideau-canal-dashboard](https://github.com/shap0011/rideau-canal-dashboard)
 
-&nbsp; - Backend: Flask REST API querying Cosmos DB
+  - Backend: Flask REST API querying Cosmos DB
 
-&nbsp; - Frontend: HTML/CSS/JavaScript + Chart.js
+  - Frontend: HTML/CSS/JavaScript + Chart.js
 
-&nbsp; - Deployment: Azure App Service (Python runtime)
+  - Deployment: Azure App Service (Python runtime)
 
 ---
 
@@ -158,11 +158,11 @@ _Architecture diagram is located in_ `architecture/architecture-diagram.png`.
 
 See `LINKS.md` for:
 
-- All three GitHub repositories
+    - All three GitHub repositories
 
-- Live Azure App Service dashboard URL
+    - Live Azure App Service dashboard URL
 
-- Video demo link
+    - Video demo link
 
 ---
 
@@ -220,9 +220,9 @@ _Detailed setup steps are provided in the READMEs of the other repositories._
 
 - Observations about:
 
-&nbsp; - Typical ranges of ice thickness and temperature
+  - Typical ranges of ice thickness and temperature
 
-&nbsp; - Safety status distribution over time
+  - Safety status distribution over time
 
 ---
 
