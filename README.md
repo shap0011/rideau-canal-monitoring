@@ -110,11 +110,27 @@ _Architecture diagram is located in_ `architecture/architecture-diagram.png`.
 
 - **Azure IoT Hub Configuration**
 
-  - Resource group: `cst8916Final`
+The IoT Hub ingests telemetry from the three simulated devices representing:
 
-  - Region: `Canada Central`
+- Dow's Lake
+- Fifth Avenue
+- NAC
 
-  - Devices: `dows-lake`, `fifth-avenue`, `nac`
+The devices were created in the Azure IoT Hub under:
+
+- Resource group: `cst8916Final`
+
+- Region: `Canada Central`
+
+- Devices: `dows-lake`, `fifth-avenue`, `nac`
+
+**IoT Hub – Registered Devices**
+
+![IoT Hub Devices](screenshots/01-iot-hub-devices.png)
+
+**IoT Hub – Telemetry Metrics**
+
+![IoT Hub Metrics](screenshots/02-iot-hub-metrics.png)
 
 - **Stream Analytics Job**
 
