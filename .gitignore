@@ -1,0 +1,15 @@
+# OS
+.DS_Store
+
+# VS Code
+.vscode/
+
+# Python (in case you drop scripts here)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+*.env
+venv/
+.venv/
