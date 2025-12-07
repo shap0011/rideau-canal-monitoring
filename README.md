@@ -206,7 +206,7 @@ See `LINKS.md` for:
 
 8. Deploy dashboard to Azure App Service.
 
-\_Detailed setup steps are provided in the READMEs of the other repositories.\_
+_Detailed setup steps are provided in the READMEs of the other repositories._
 
 ---
 
@@ -238,7 +238,6 @@ Describe:
 
 ## 11. AI Tools Used
 
-```markdown
 ## AI Tools Used
 
 - **Tool:** ChatGPT
@@ -246,4 +245,3 @@ Describe:
 - **Purpose:** Help with initial project structure, documentation templates, and example code snippets.
 
 - **Extent:** All AI-generated content was reviewed, understood, and modified to match my own implementation. I understand all code and configuration before using it.
-```
