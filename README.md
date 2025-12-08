@@ -2,9 +2,9 @@
 
 ## 1. Project Title and Description
 
-Real-time Monitoring System for the **Rideau Canal Skateway** (Dow's Lake, Fifth Avenue, NAC) using Azure IoT, Stream Analytics, Cosmos DB, Blob Storage, and a Flask-based web dashboard.
+Real-time Monitoring System for the **Rideau Canal Skateway** (Dow’s Lake, Fifth Avenue, NAC), built using Azure IoT Hub, Stream Analytics, Cosmos DB, Blob Storage, and a custom web dashboard.
 
-The system simulates IoT sensors sending ice and weather data, processes it in real time, stores aggregated results, archives historical data, and displays current conditions and safety status on a web dashboard.
+The system simulates IoT sensors, streams live ice/weather telemetry, processes aggregates in real-time, stores results, archives historical data, and visualizes safety status for each location.
 
 ---
 
@@ -20,9 +20,9 @@ The system simulates IoT sensors sending ice and weather data, processes it in r
 
 - **Main Documentation:** https://github.com/shap0011/rideau-canal-monitoring
 
-- **Sensor Simulation:** https://github.com/shap0011/rideau-canal-sensor-simulation
+- **Sensor Simulation (Python):** https://github.com/shap0011/rideau-canal-sensor-simulation
 
-- **Web Dashboard:** https://github.com/shap0011/rideau-canal-dashboard
+- **Web Dashboard (Node.js):** https://github.com/shap0011/25F_CST8916_Final_Project_Web-Dashboard
 
 ---
 
@@ -30,19 +30,19 @@ The system simulates IoT sensors sending ice and weather data, processes it in r
 
 ### Problem Statement
 
-The Rideau Canal Skateway in Ottawa requires continuous monitoring to ensure skater safety. Ice thickness, surface temperature, snow accumulation, and external temperature vary throughout the day and across locations.
+The Rideau Canal Skateway requires continuous monitoring to ensure visitor safety. Conditions vary across locations and time, making real-time data essential.
 
 ### System Objectives
 
 - Simulate IoT sensors at three key locations.
 
-- Process data in real time using Azure Stream Analytics (5-minute windows).
+- Stream telemetry to Azure IoT Hub.
 
-- Store processed aggregates in Azure Cosmos DB and archive to Blob Storage.
+- Aggregate real-time data in Azure Stream Analytics (5-minute windows).
 
-- Visualize current and historical conditions in a web dashboard.
+- Store processed data in Cosmos DB and archive historical windows to Blob Storage.
 
-- Indicate safety status (Safe / Caution / Unsafe) for each location.
+- Display live conditions, safety statuses, and historical trends on a dashboard.
 
 ---
 
@@ -50,65 +50,103 @@ The Rideau Canal Skateway in Ottawa requires continuous monitoring to ensure ska
 
 ### 4.1 Architecture Diagram
 
-_Architecture diagram is located in_ `architecture/architecture-diagram.png`.
+```mermaid
 
-### 4.2 Data Flow
+flowchart TB
 
-1. **Sensor Simulation** (Python) generates JSON data every 10 seconds for:
+    subgraph Sensors["IoT Sensors (Simulated)"]
+        direction TB
+        Dows["Dow's Lake Sensor"]
+        Fifth["Fifth Avenue Sensor"]
+        NAC["NAC Sensor"]
+    end
 
-   - Dow's Lake
+    Sensors --> IoTHub["Azure IoT Hub"]
 
-   - Fifth Avenue
+    IoTHub --> ASA["Azure Stream Analytics<br/>(5-minute tumbling windows)"]
 
-   - NAC
+    ASA --> Cosmos["Azure Cosmos DB<br/>(Aggregated Data)"]
+    ASA --> Blob["Azure Blob Storage<br/>(Historical Archives)"]
 
-2. Data is sent to **Azure IoT Hub**.
+    Cosmos --> Dashboard["Web Dashboard<br/>(Express + Chart.js)"]
+    Blob --> Dashboard
 
-3. **Azure Stream Analytics** reads from IoT Hub and:
 
-   - Aggregates data in **5-minute tumbling windows**.
+```
 
-   - Calculates averages/min/max values.
+### 4.2 Azure Services Used
 
-   - Determines **safety status** per window and location.
+- Azure IoT Hub – sensor data ingestion
 
-   - Writes aggregated data to:
+- Azure Stream Analytics – real-time processing
 
-     - **Azure Cosmos DB** (for dashboard queries).
+- Azure Cosmos DB – fast read access for dashboard
 
-     - **Azure Blob Storage** (for historical archives).
+- Azure Blob Storage – long-term historical archive
 
-4. **Flask Web Dashboard** (Python) reads from Cosmos DB and:
+- Azure App Service – attempted deployment of dashboard
 
-   - Displays latest status for each location.
+### 4.3 Data Flow
 
-   - Shows historical trend charts (last hour).
+**1. Sensor Simulation:** Python script generates telemetry (ice thickness, surface temp, snow accumulation, external temperature) every **10 seconds** for:
 
-   - Auto-refreshes every 30 seconds.
+- Dow's Lake
 
-### 4.3 Azure Services Used
+- Fifth Avenue
 
-- Azure IoT Hub
+- NAC
 
-- Azure Stream Analytics
+**2. Azure IoT Hub:** Ingests telemetry from the three simulated devices.
 
-- Azure Cosmos DB (NoSQL API)
+**3. Azure Stream Analytics:**
 
-- Azure Blob Storage
+- Reads telemetry from IoT Hub
 
-- Azure App Service (hosting Flask dashboard)
+- Performs **5-minute tumbling window** aggregations
+
+- Computes min/max/averages
+
+- Applies the safety rules:
+
+  - **Safe:** Ice ≥ 30 cm AND Surface Temp ≤ –2°C
+
+  - **Caution:** Ice ≥ 25 cm AND Surface Temp ≤ 0°C
+
+  - **Unsafe:** otherwise
+
+- Outputs results to:
+
+  - **Cosmos DB** (live dashboard queries)
+
+  - **Blob Storage** (historical archive)
+
+**4. Web Dashboard (Node.js + Express):**
+
+- Queries Cosmos DB for live + recent historical data
+
+- Displays:
+
+  - Live values per location
+
+  - Safety badges
+
+  - Trend charts using Chart.js
+
+  - Auto-refresh (optional)
 
 ---
 
 ## 5. Implementation Overview
 
-- **IoT Sensor Simulation**
+**IoT Sensor Simulation**
 
-  - Repository: [rideau-canal-sensor-simulation](https://github.com/shap0011/rideau-canal-sensor-simulation)
+- Repository: [rideau-canal-sensor-simulation](https://github.com/shap0011/rideau-canal-sensor-simulation)
 
-  - Python script that simulates three devices and sends telemetry to IoT Hub.
+- Python script simulating three IoT devices
 
-- **Azure IoT Hub Configuration**
+- Sends JSON telemetry every 10 seconds to IoT Hub
+
+**Azure IoT Hub**
 
 The IoT Hub ingests telemetry from the three simulated devices representing:
 
@@ -132,13 +170,15 @@ The devices were created in the Azure IoT Hub under:
 
 ![IoT Hub Metrics](screenshots/02-iot-hub-metrics.png)
 
-- **Stream Analytics Job**
+**Azure Stream Analytics Job**
 
-  - Input: IoT Hub
+- Input: IoT Hub
 
-  - Outputs: Cosmos DB + Blob Storage
+- Outputs: Cosmos DB + Blob Storage
 
-  - Query: see `stream-analytics/query.sql`
+- Window: 5-minute tumbling
+
+- Query: see _[stream-analytics/query.sql](./stream-analytics/query.sql)_
 
 **Stream Analytics Job - Stream Analytics Query**
 
@@ -148,47 +188,65 @@ The devices were created in the Azure IoT Hub under:
 
 ![Stream Analytics Running](screenshots/04-stream-analytics-running.png)
 
-- **Cosmos DB Setup**
+**Cosmos DB**
 
-  - Database: `RideauCanalDB`
+- Database: `RideauCanalDB`
 
-  - Container: `SensorAggregations`
+- Container: `SensorAggregations`
 
-  - Partition key: `/location`
+- Partition key: `/location`
 
-  - Document ID: `{location}-{timestamp}`
+- Document created every 5 minutes per location
 
 **Cosmos DB – Aggregated Sensor Data**
 
 ![Cosmos DB Data](screenshots/05-cosmos-db-data.png)
 
-- **Blob Storage Configuration**
+**Azure Blob Storage Configuration**
 
-  - Container: `historical-data`
+- Container: `historical-data`
 
-  - Path: `aggregations/{date}/{time}`
+- Path: `aggregations/{date}/{time}`
 
-  - Format: line-delimited JSON
+- Format: line-delimited JSON
+
+- Automatically generated by Stream Analytics
 
 **Blob Storage – Historical Aggregations**
 
 ![Blob Storage Files](screenshots/06-blob-storage-files.png)
 
-- **Web Dashboard (Flask)**
+**Web Dashboard (Node.js)**
 
-  - Repository: [rideau-canal-dashboard](https://github.com/shap0011/rideau-canal-dashboard)
+- Repository: [rideau-canal-dashboard](https://github.com/shap0011/25F_CST8916_Final_Project_Web-Dashboard)
 
-  - Backend: Flask REST API querying Cosmos DB
+- Backend: Express REST API querying Cosmos DB
 
-  - Frontend: HTML/CSS/JavaScript + Chart.js
+- Frontend: HTML, CSS, Vanilla JS, Chart.js
 
-  - Deployment: Azure App Service (Python runtime)
+- Features:
 
-**Web Dashboard (Flask) – Dashboard Local**
+  - Live status per location
+
+  - Safety color indicators
+
+  - Trend charts (last N windows)
+
+  - API endpoints: `/api/latest`, `/api/status`, `/api/history/:location`, `/health`
+
+**Web Dashboard (Node.js) – Dashboard Local**
 
 ![Dashboard Local](screenshots/07-dashboard-local.png)
 
-**Web Dashboard (Flask) – Dashboard Local**
+**Azure Deployment Attempt**
+
+Azure App Service was configured (Node 20 LTS), environment variables added, and the dashboard zip deployed.
+
+However, Azure App Service returned **Application Error** due to issues with OneDeploy / Log Stream / diagnostic extensions API.
+
+This is documented fully in Section 10.
+
+**Web Dashboard (Node.js) – Azure Deployment Attempt**
 
 ![Dashboard Azure](screenshots/08-dashboard-azure.png)
 
@@ -200,7 +258,7 @@ See `LINKS.md` for:
 
 - All three GitHub repositories
 
-- Live Azure App Service dashboard URL
+- (Attempted) Azure App Service URL
 
 - Video demo link
 
@@ -208,85 +266,145 @@ See `LINKS.md` for:
 
 ## 7. Video Demonstration
 
-- **YouTube Link (Unlisted):** TODO: Add link here
+- **YouTube Link (Unlisted):** _To be added_
 
-- Duration: ≤ 10 minutes
+- **Duration:** ≤ 10 minutes
 
-- Content: Architecture, live demo, code walkthrough, conclusion.
+Covers:
+
+- Architecture overview
+
+- Live demo: sensor simulation, IoT Hub, Stream Analytics, Cosmos DB, Blob Storage
+
+- Dashboard demo
+
+- Brief code walkthrough
+
+- Challenges + lessons learned
 
 ---
 
 ## 8. Setup Instructions (High-Level)
 
-### Prerequisites
+**Prerequisites**
 
-- Azure subscription (Azure for Students is sufficient)
+- Azure subscription (Azure for Students)
 
-- Python 3.10+ installed locally
+- Python 3.10+ (for sensor simulation)
 
-- Git \& GitHub
+- Node.js 18+ (for web dashboard)
 
-- (Optional) Virtual environment tool (venv)
+- Git + GitHub
 
-### High-Level Steps
+- Azure services configured:
 
-1. Clone all three repositories.
+  - IoT Hub
 
-2. Configure Azure resources (IoT Hub, Stream Analytics, Cosmos DB, Blob Storage, App Service).
+  - Stream Analytics
 
-3. Configure sensor simulator with device connection strings and IoT Hub info.
+  - Cosmos DB
 
-4. Start Stream Analytics job.
+  - Blob Storage
 
-5. Run sensor simulator to generate data.
+  - App Service (optional for deployment)
 
-6. Verify data in Cosmos DB and Blob Storage.
+**Steps**
 
-7. Run Flask dashboard locally.
+**1. Clone all repositories**
 
-8. Deploy dashboard to Azure App Service.
+- Monitoring (documentation)
 
-_Detailed setup steps are provided in the READMEs of the other repositories._
+- Sensor simulation
+
+- Web dashboard
+
+**2. Create Azure resources**
+
+- IoT Hub
+
+- Stream Analytics inputs/outputs
+
+- Cosmos DB database + container
+
+- Blob Storage container
+
+**3. Configure sensor simulator**
+
+- Add device connection strings
+
+- Add IoT Hub hostname
+
+**4. Start the Stream Analytics job**
+
+**5. Run the sensor simulator locally**
+
+**6. Verify outputs**
+
+- Cosmos DB shows aggregated documents
+
+- Blob Storage receives archived JSON
+
+**7. Run the web dashboard locally**
+
+- `npm install`
+
+- `npm start`
+
+**8. Deploy dashboard to Azure App Service (optional)**
 
 ---
 
 ## 9. Results and Analysis
 
-- Sample aggregated documents (Cosmos DB)
+- Aggregated Cosmos DB documents appear every 5 minutes
 
-- Sample archived files (Blob Storage)
+- Blob Storage contains time-based archives
 
-- Screenshots of dashboard with safety statuses and trends
+- Dashboard shows:
 
-- Observations about:
+  - Ice thickness averages
 
-  - Typical ranges of ice thickness and temperature
+  - Temperature trends
 
-  - Safety status distribution over time
+  - Max snow accumulation
+
+  - Safety statuses
+
+- Data looks realistic within simulated ranges
 
 ---
 
 ## 10. Challenges and Solutions
 
-Describe:
+### Problem: Issue: Dashboard Trend Charts Initially Empty
 
-- Technical issues (e.g., connection strings, Stream Analytics query bugs, Cosmos DB indexing).
+**Cause:** Cosmos DB items were older than 1 hour when using strict filtering.
 
-- How you diagnosed and fixed them.
+**Fix:** History API was updated to return recent N entries instead of filtering by timestamp.
 
-### Problem: Dashboard charts showed “No history data to plot”
+### Issue: Azure App Service Deployment Failure
 
-Originally, the `/api/history` endpoint filtered Cosmos DB documents to only return the last 60 minutes:
+Azure App Service was configured (Node 20), environment variables added, and ZIP deployed via OneDeploy.
 
-```sql
-WHERE c.windowEnd >= @startTime
-```
+Deployment logs indicated success, but the live site returned:
 
-Since my simulator had run earlier and I had stopped it, all documents in Cosmos DB were older than 1 hour. As a result, /api/history returned an empty array and the charts had no data to display.
+> **Application Error**
 
-**Solution**
+Additionally:
 
-I updated the /api/history API to return all historical documents, ordered by time. The frontend already limits the number of points shown (last N values), so the trend charts display correctly.
+- **Log Stream failed** with: `Encountered an error (Forbidden) from extensions API.`
+
+- **Publish file (new)** intermittently failed with “Failed to fetch”
+
+- Diagnostic tools were unavailable
+
+- The runtime never launched the Node app despite correct structure
+
+**Conclusion:**
+
+The dashboard runs perfectly locally, but Azure App Service experienced platform-level issues (diagnostic extension failure).
+
+This is documented per assignment instructions, with screenshots included.
 
 ---
 
@@ -296,10 +414,7 @@ I updated the /api/history API to return all historical documents, ordered by ti
 
 - **Tool:** ChatGPT
 
-- **Purpose:** Help with initial project structure, documentation templates, and example code snippets.
+- **Purpose:** Assist with documentation, error explanations, architectural clarification, and debugging assistance.
 
-- **Extent:** All AI-generated content was reviewed, understood, and modified to match my own implementation. I understand all code and configuration before using it.
-
-```
-
-```
+- **Extent:** All AI outputs were reviewed, adapted, and integrated only after full understanding.
+  I understand all code, queries, and Azure configurations used in this project.
