@@ -11,17 +11,18 @@
 ### 1. Main Documentation Repository
 
 - **URL:** https://github.com/shap0011/rideau-canal-monitoring
-- **Description:** Complete project documentation, architecture, screenshots, and guides.
+- **Description:** Central repository containing the full project documentation, system architecture, setup instructions, screenshots, and assignment deliverables.
 
 ### 2. Sensor Simulation Repository
 
 - **URL:** https://github.com/shap0011/rideau-canal-sensor-simulation
-- **Description:** IoT sensor simulator code.
+- **Description:** Python-based IoT sensor simulator. Sends JSON telemetry to Azure IoT Hub for three virtual Rideau Canal locations.
 
 ### 3. Web Dashboard Repository
 
-- **URL:** https://github.com/shap0011/rideau-canal-dashboard
-- **Description:** Flask-based web dashboard application.
+- **URL:** https://github.com/shap0011/25F_CST8916_Final_Project_Web-Dashboard
+- **Description:** Node.js / Express-based dashboard application (adapted from professor’s starter code).
+  Reads real-time data from Cosmos DB and displays safety status and trend charts.
 
 ## Demo
 

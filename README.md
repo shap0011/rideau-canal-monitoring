@@ -254,7 +254,7 @@ This is documented fully in Section 10.
 
 ## 6. Repository Links
 
-See `LINKS.md` for:
+See _[LINKS.md](./LINKS.md)_ for:
 
 - All three GitHub repositories
 
