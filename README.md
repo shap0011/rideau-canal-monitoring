@@ -158,6 +158,10 @@ The devices were created in the Azure IoT Hub under:
 
   - Document ID: `{location}-{timestamp}`
 
+**Cosmos DB – Aggregated Sensor Data**
+
+![Cosmos DB Data](screenshots/05-cosmos-db-data.png)
+
 - **Blob Storage Configuration**
 
   - Container: `historical-data`
