@@ -144,6 +144,10 @@ The devices were created in the Azure IoT Hub under:
 
 ![Stream Analytics Query](screenshots/03-stream-analytics-query.png)
 
+**Stream Analytics Job - Stream Analytics Running**
+
+![Stream Analytics Running](screenshots/04-stream-analytics-running.png)
+
 - **Cosmos DB Setup**
 
   - Database: `RideauCanalDB`
