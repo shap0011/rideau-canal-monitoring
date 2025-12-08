@@ -188,6 +188,10 @@ The devices were created in the Azure IoT Hub under:
 
 ![Dashboard Local](screenshots/07-dashboard-local.png)
 
+**Web Dashboard (Flask) – Dashboard Local**
+
+![Dashboard Azure](screenshots/08-dashboard-azure.png)
+
 ---
 
 ## 6. Repository Links
