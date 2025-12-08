@@ -170,6 +170,10 @@ The devices were created in the Azure IoT Hub under:
 
   - Format: line-delimited JSON
 
+**Blob Storage – Historical Aggregations**
+
+![Blob Storage Files](screenshots/06-blob-storage-files.png)
+
 - **Web Dashboard (Flask)**
 
   - Repository: [rideau-canal-dashboard](https://github.com/shap0011/rideau-canal-dashboard)
