@@ -184,6 +184,10 @@ The devices were created in the Azure IoT Hub under:
 
   - Deployment: Azure App Service (Python runtime)
 
+**Web Dashboard (Flask) – Dashboard Local**
+
+![Dashboard Local](screenshots/07-dashboard-local.png)
+
 ---
 
 ## 6. Repository Links
@@ -266,6 +270,20 @@ Describe:
 
 - How you diagnosed and fixed them.
 
+### Problem: Dashboard charts showed “No history data to plot”
+
+Originally, the `/api/history` endpoint filtered Cosmos DB documents to only return the last 60 minutes:
+
+```sql
+WHERE c.windowEnd >= @startTime
+```
+
+Since my simulator had run earlier and I had stopped it, all documents in Cosmos DB were older than 1 hour. As a result, /api/history returned an empty array and the charts had no data to display.
+
+**Solution**
+
+I updated the /api/history API to return all historical documents, ordered by time. The frontend already limits the number of points shown (last N values), so the trend charts display correctly.
+
 ---
 
 ## 11. AI Tools Used
@@ -277,3 +295,7 @@ Describe:
 - **Purpose:** Help with initial project structure, documentation templates, and example code snippets.
 
 - **Extent:** All AI-generated content was reviewed, understood, and modified to match my own implementation. I understand all code and configuration before using it.
+
+```
+
+```
