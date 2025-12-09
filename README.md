@@ -9,6 +9,8 @@
 [📡 Sensor Simulation](https://github.com/shap0011/rideau-canal-sensor-simulation)
 •
 [📊 Web Dashboard](https://github.com/shap0011/25F_CST8916_Final_Project_Web-Dashboard)
+•
+[🎥 Video](https://youtu.be/tET3iHNK-CU)
 
 </div>
 
