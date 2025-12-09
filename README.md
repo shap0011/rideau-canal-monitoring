@@ -378,33 +378,94 @@ Covers:
 
 ### Problem: Issue: Dashboard Trend Charts Initially Empty
 
-**Cause:** Cosmos DB items were older than 1 hour when using strict filtering.
+**Cause:** Cosmos DB documents were older than 1 hour. The original /api/history endpoint used:
 
-**Fix:** History API was updated to return recent N entries instead of filtering by timestamp.
+`WHERE c.windowEnd >= @startTime`
 
-### Issue: Azure App Service Deployment Failure
+This returned an empty array, so the dashboard charts had no data to display.
 
-Azure App Service was configured (Node 20), environment variables added, and ZIP deployed via OneDeploy.
+**Fix:** The History API was updated to return the most recent N entries, regardless of timestamp.
+The frontend now plots the last 12 (≈1 hour) values, ensuring graphs always display correctly.
 
-Deployment logs indicated success, but the live site returned:
+### Issue: Azure App Service Deployment Failures
+
+Azure App Service was configured with:
+
+- Node.js 20 (LTS)
+
+- Correct startup command (npm start → node server.js)
+
+- Proper environment variables
+
+- Deployment via OneDeploy ZIP and GitHub Actions
+
+Although deployments appeared successful, the live URL showed:
 
 > **Application Error**
 
-Additionally:
+Additional platform issues occurred:
 
-- **Log Stream failed** with: `Encountered an error (Forbidden) from extensions API.`
+- **Log Stream** returned: `Encountered an error (Forbidden) from extensions API.`
 
-- **Publish file (new)** intermittently failed with “Failed to fetch”
+- **Publish File (new)** often failed with “Failed to fetch”
 
-- Diagnostic tools were unavailable
+- Diagnostic tools (Console, Log Stream, Process Explorer) were unavailable
 
-- The runtime never launched the Node app despite correct structure
+- The App Service runtime never successfully started the Node container
 
 **Conclusion:**
 
-The dashboard runs perfectly locally, but Azure App Service experienced platform-level issues (diagnostic extension failure).
+The dashboard ran correctly locally, but App Service experienced platform-level diagnostic extension failures preventing startup.
 
 This is documented per assignment instructions, with screenshots included.
+
+### Issue: Azure App Service Quota Exceeded
+
+While troubleshooting deployments, the App Service plan eventually showed:
+
+> **Quota exceeded** <br/>
+> Container did not start within expected time limit<br/>
+> (ContainerTimeout / Blocked)
+
+![Quota exceeded](./screenshots/09_quota_exceeded.png)
+
+**Cause:**
+
+Azure for Students uses limited free-tier App Service resources (CPU minutes, memory).
+
+During repeated deployments, restarts, and container rebuilds, the daily quota was exhausted.
+
+Once this happens:
+
+- The App Service is **stopped by Azure**
+
+- Containers cannot start
+
+- Any attempt to run or redeploy results in failures until the quota resets automatically
+
+**Fix / Outcome:**
+
+The dashboard continued to run locally for the demo, but Azure App Service could not remain active due to free-tier limits.
+
+This situation is explicitly allowed in the assignment (“partial credit if deployment fails, with screenshots and explanation”).
+
+### Overall Summary
+
+The full real-time pipeline works end-to-end:
+
+- IoT devices → IoT Hub → Stream Analytics → Cosmos DB → Blob Storage
+
+- Dashboard runs successfully locally, displaying real-time updates and historical charts
+
+- All Azure resources function correctly except App Service, which encountered:
+
+  - Diagnostic extension errors
+
+  - Application startup failures
+
+  - Free-tier quota exhaustion
+
+All issues were documented and handled according to project requirements.
 
 ---
 
