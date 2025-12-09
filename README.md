@@ -1,10 +1,38 @@
 # Rideau Canal Real-time Monitoring System
 
+## CST8916 – Remote Data & Real-Time Applications (Final Project)
+
+<div align="center">
+
+[📘 Main Documentation](https://github.com/shap0011/rideau-canal-monitoring)
+•
+[📡 Sensor Simulation](https://github.com/shap0011/rideau-canal-sensor-simulation)
+•
+[📊 Web Dashboard](https://github.com/shap0011/25F_CST8916_Final_Project_Web-Dashboard)
+
+</div>
+
+---
+
+## Technologies
+
+### At a Glance
+
+- **3 simulated IoT sensors** (Dow's Lake, Fifth Avenue, NAC)
+- **Telemetry every 10 seconds**
+- **Azure Stream Analytics** with **5-minute tumbling windows**
+- **Cosmos DB** stores aggregated results
+- **Blob Storage** archives JSON history
+- **Web dashboard** shows:
+  - Latest values
+  - Safety status
+  - Trend charts (Chart.js)
+
+---
+
 ## 1. Project Title and Description
 
-Real-time Monitoring System for the **Rideau Canal Skateway** (Dow’s Lake, Fifth Avenue, NAC), built using Azure IoT Hub, Stream Analytics, Cosmos DB, Blob Storage, and a custom web dashboard.
-
-The system simulates IoT sensors, streams live ice/weather telemetry, processes aggregates in real-time, stores results, archives historical data, and visualizes safety status for each location.
+A real-time monitoring system for the **Rideau Canal Skateway** that simulates IoT sensors, processes their data in Azure, and displays results in a web dashboard.
 
 ---
 
@@ -14,19 +42,13 @@ The system simulates IoT sensors, streams live ice/weather telemetry, processes 
 - **Student ID:** 040687883
 - **Course:** 25F CST8916 Remote Data and RT Applications
 
-**Repositories:**
-
-- **Main Documentation:** https://github.com/shap0011/rideau-canal-monitoring
-- **Sensor Simulation (Python):** https://github.com/shap0011/rideau-canal-sensor-simulation
-- **Web Dashboard (Node.js):** https://github.com/shap0011/25F_CST8916_Final_Project_Web-Dashboard
-
 ---
 
 ## 3. Scenario Overview
 
 ### Problem Statement
 
-The Rideau Canal Skateway requires continuous monitoring to ensure visitor safety. Conditions vary across locations and time, making real-time data essential.
+The Rideau Canal’s ice conditions change throughout the day and require constant monitoring to ensure public safety.
 
 ### System Objectives
 
